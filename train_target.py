@@ -145,7 +145,7 @@ def data_split(args, base_network):
         prototype = F.normalize(prototype) # cls * 256
         dists = prototype.mm(features_bank.t())  # cls * len
 
-        sort_idxs = torch.argsort(dists, dim=1, descending=True)
+        sort_idxs = torch.argsort(dists, dim=1, descending=True) #cls * len
         fault = 0.
 
         for i in range(args.class_num):
@@ -247,7 +247,6 @@ def train(args):
 
     ## Memory Bank
     if args.pl.endswith('na'):
-        # print(1)
         mem_fea = torch.rand(len(dset_loaders["target"].dataset), args.bottleneck_dim).cuda()
         mem_fea = mem_fea / torch.norm(mem_fea, p=2, dim=1, keepdim=True)
         mem_cls = torch.ones(len(dset_loaders["target"].dataset), class_num).cuda() / class_num
@@ -288,7 +287,7 @@ def train(args):
         if args.src_ratio:
             _, outputs_source = base_network(inputs_proxy)
 
-            src_ = loss.CrossEntropyLabelSmooth(reduction='none',num_classes=class_num, epsilon=args.smooth)(outputs_source, labels_proxy)
+            src_ = loss.CrossEntropyLabelSmooth(reduction=None,num_classes=class_num, epsilon=args.smooth)(outputs_source, labels_proxy)
 
             weight_src = class_weight_src[labels_proxy].unsqueeze(0)
             src_cls = torch.sum(weight_src * src_) / (torch.sum(weight_src).item())
@@ -300,7 +299,6 @@ def train(args):
         softmax_out = nn.Softmax(dim=1)(outputs_target)
 
         if args.pl.endswith('na'):
-            # print(2)
             dis = -torch.mm(features_target.detach(), mem_fea.t())
             for di in range(dis.size(0)):
                 dis[di, idx[di]] = torch.max(dis)
@@ -355,20 +353,6 @@ def train(args):
                         for wj in range(args.K):
                             w[wi][p1[wi, wj]] = 1/ args.K
                     sft_label2 = w.mm(mem_cls)
-            elif args.pl == 'mixmatch':
-                with torch.no_grad():
-                    _, outputs_u = base_network(inputs_t2)
-                    sfm_out2 = nn.Softmax(dim=1)(outputs_u)
-                    sfm_out2 = sfm_out2 ** 2 #/ sfm_out2.sum(dim=0)
-                    sft_label2 = sfm_out2 / sfm_out2.sum(dim=1, keepdim=True)
-                    sft_label2 = sft_label2.detach()
-            elif args.pl == 'fw':
-                with torch.no_grad():
-                    _, outputs_u = base_network(inputs_t2)
-                    sfm_out2 = nn.Softmax(dim=1)(outputs_u)
-                    sfm_out = sfm_out2 ** 2 / sfm_out2.sum(dim=0)
-                    sft_label2 = sfm_out / sfm_out.sum(dim=1, keepdim=True)
-                    sft_label2 = sft_label2.detach()
 
             targets_u += 0.5 * sft_label2
 
@@ -472,7 +456,6 @@ def train(args):
 
     return best_y.cpu().numpy().astype(np.int64)
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Domain Adaptation Methods')
     parser.add_argument('--method', type=str, default='srconly')
@@ -487,9 +470,9 @@ if __name__ == "__main__":
     parser.add_argument('--pl', type=str, default='fw_na',choices=['mixmatch', 'fw', 'mixmatch_na','remixmatch_na','fw_na','atdoc_na'])
     parser.add_argument('--split', type=str, default='proto',choices=['proto', 'ent','rand'])
 
-    parser.add_argument('--mix_ratio', type=float, default=1) 
-    parser.add_argument('--reg_ratio', type=float, default=1) 
-    parser.add_argument('--src_ratio', type=float, default=1) 
+    parser.add_argument('--mix_ratio', type=float, default=1)
+    parser.add_argument('--reg_ratio', type=float, default=1)
+    parser.add_argument('--src_ratio', type=float, default=1)
     parser.add_argument('--alpha', type=float, default=0.75)
 
     parser.add_argument('--ckpt', type=str, default=None)

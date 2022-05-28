@@ -13,27 +13,6 @@ import torchvision
 import loss
 import utils
 
-
-
-def cal_acc(y_true, y_pred):
-    """
-        Calculate clustering accuracy. Require scikit-learn installed
-        # Arguments
-            y: true labels, numpy.array with shape `(n_samples,)`
-            y_pred: predicted labels, numpy.array with shape `(n_samples,)`
-        # Return
-            accuracy, in [0,1]
-    """
-    assert len(y_pred) == len(y_true)
-    # D = max(args.class_num, args.class_num) + 1
-    D = max(args.class_num, args.class_num) 
-    w = np.zeros((D, D), dtype=np.int64)
-    for i in range(len(y_pred)):
-        w[y_pred[i], y_true[i]] += 1
-    from sklearn.utils.linear_assignment_ import linear_assignment
-    ind = linear_assignment(w.max() - w)
-    return sum([w[i, j] for i, j in ind]) * 1.0 / y_pred.size, ind
-
 def data_load(args):
     train_transform = torchvision.transforms.Compose([
         torchvision.transforms.Resize((256, 256)),
@@ -118,7 +97,7 @@ def train(args, label=None):
         inputs_source, labels_source = inputs_source.cuda(),  labels_source.cuda()
         _, outputs_source = base_network(inputs_source)
 
-        src_ = loss.CrossEntropyLabelSmooth(reduction='none',num_classes=class_num, epsilon=args.smooth)(outputs_source, labels_source)
+        src_ = loss.CrossEntropyLabelSmooth(reduction=False,num_classes=class_num, epsilon=args.smooth)(outputs_source, labels_source)
         weight_src = class_weight_src[labels_source].unsqueeze(0)
         classifier_loss = torch.sum(weight_src * src_) / (torch.sum(weight_src).item())
         
