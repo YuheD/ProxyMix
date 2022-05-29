@@ -22,7 +22,6 @@ This implementation is based on [ATDOC](https://github.com/tim-learn/ATDOC) and 
 
 ### Training:
 1. ##### Office-31 dataset
-	- Amazon
 	```python
     # train source model
     python train_source.py --dset office --s 0 --max_epoch 50
