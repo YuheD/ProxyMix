@@ -7,7 +7,7 @@ This implementation is based on [ATDOC](https://github.com/tim-learn/ATDOC) and 
 1. train on the source domain;
 2. Construct the proxy source domain and train on target dataset.
 
-<img src="figs/net.png" width="600"/>
+<img src="figs/net.png" width="800"/>
 
 ### Prerequisites:
 - python == 3.6.8
