@@ -1,5 +1,5 @@
 # Official Implementation for ProxyMix
-[ProxyMix: Proxy-based Mixup Training with Label Refinery for Source-Free Domain Adaptation]
+[ProxyMix: Proxy-based Mixup Training with Label Refinery for Source-Free Domain Adaptation](https://arxiv.org/pdf/2205.14566.pdf)
 
 This implementation is based on [ATDOC](https://github.com/tim-learn/ATDOC).
 ### Framework:  
