@@ -39,4 +39,9 @@ This implementation is based on [ATDOC](https://github.com/tim-learn/ATDOC).
 
 If you find this code useful for your research, please cite our papers
 ```
-Coming soon...
+@article{ding2022proxymix,
+  title={ProxyMix: Proxy-based Mixup Training with Label Refinery for Source-Free Domain Adaptation},
+  author={Ding, Yuhe and Sheng, Lijun and Liang, Jian and Zheng, Aihua and He, Ran},
+  journal={arXiv preprint arXiv:2205.14566},
+  year={2022}
+}
