@@ -30,9 +30,19 @@ This implementation is based on [ATDOC](https://github.com/tim-learn/ATDOC).
     python train_target.py --dset office --easynum 5 --output test --gpu_id 7 --s 0 --t 2
 	```
 2. ##### Office-Home dataset
-	- Coming soon ...
+	```python
+    # train source model
+    python train_source.py --dset office-home --s 0 --max_epoch 50
+    # train target model
+    python train_target.py --dset office-home --easynum 10 --output test --gpu_id 7 --s 0 --t 1 --max_epoch 50
+	```
 3. ##### VISDA-C dataset
-	- Coming soon ...
+	```python
+    # train source model
+    python train_source.py --dset VISDA-C --s 0 --max_epoch 5
+    # train target model
+    python train_target.py --dset VISDA-C --easynum 50 --output test --gpu_id 7 --s 0 --t 1 --max_epoch 1
+	```
 
 
 ### Citation
